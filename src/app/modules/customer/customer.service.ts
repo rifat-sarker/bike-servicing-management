@@ -15,8 +15,16 @@ const getAllCustomersFromDB = async () => {
   return result;
 };
 
+// get specific customer from the db
+const getSpecificCustomerFromDB = async (id: string) => {
+  const result = await prisma.customer.findUnique({
+    where: { customerId: id },
+  });
+  return result;
+};
 
 export const CustomerServices = {
   createCustomerIntoDB,
   getAllCustomersFromDB,
+  getSpecificCustomerFromDB,
 };

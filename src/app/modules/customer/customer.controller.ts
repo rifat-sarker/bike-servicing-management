@@ -36,7 +36,30 @@ const getAllCustomers = async (req: Request, res: Response) => {
   }
 };
 
+// get specific customer by id
+const getSpecificCustomer = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await CustomerServices.getSpecificCustomerFromDB(id);
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Customer retrieved successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error getting customer:", error);
+    res.status(500).json({ message: "Fail to fetch customer" });
+  }
+};
+
 export const customerController = {
   createCustomer,
   getAllCustomers,
+  getSpecificCustomer,
 };
