@@ -9,7 +9,7 @@ const createCustomerIntoDB = async (payload: Customer) => {
   return result;
 };
 
-// get all customers from the db
+// get all customer from the db
 const getAllCustomersFromDB = async () => {
   const result = await prisma.customer.findMany();
   return result;
@@ -25,17 +25,32 @@ const getSpecificCustomerFromDB = async (id: string) => {
 
 // update customer in the db
 const updateCustomerIntoDB = async (id: string, payload: Partial<Customer>) => {
-  const result = await prisma.customer.update({
-    where: { customerId: id },
-    data: payload,
+  const result = await prisma.$transaction(async (transactionClient) => {
+    await transactionClient.customer.findUniqueOrThrow({
+      where: { customerId: id },
+    });
+
+    const updateCustomer = await transactionClient.customer.update({
+      where: { customerId: id },
+      data: payload,
+    });
+    return updateCustomer;
   });
   return result;
 };
 
 // delete customer from the db
 const deleteCustomerFromDB = async (id: string) => {
-  const result = await prisma.customer.delete({
-    where: { customerId: id },
+  const result = await prisma.$transaction(async (transactionClient) => {
+    await transactionClient.bike.deleteMany({
+      where: { customerId: id },
+    });
+
+    const deleteCustomer = await transactionClient.customer.delete({
+      where: { customerId: id },
+    });
+
+    return deleteCustomer;
   });
   return result;
 };

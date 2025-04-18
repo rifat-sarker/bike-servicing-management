@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../../utils/prisma";
 import { BikeServices } from "./bike.service";
 
-// Create customer
+// Create bike
 const createBike = async (req: Request, res: Response): Promise<void> => {
   try {
     const bikeData = req.body;
@@ -20,7 +20,7 @@ const createBike = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// get all customers
+// get all bikes
 const getAllBikes = async (req: Request, res: Response) => {
   try {
     const result = await BikeServices.getAllBikesFromDB();
@@ -35,7 +35,7 @@ const getAllBikes = async (req: Request, res: Response) => {
   }
 };
 
-// get specific customer by id
+// get specific bike by id
 const getSpecificBike = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

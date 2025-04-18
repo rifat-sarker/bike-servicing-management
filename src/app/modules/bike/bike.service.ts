@@ -23,27 +23,9 @@ const getSpecificBikeFromDB = async (id: string) => {
   return result;
 };
 
-// update customer in the db
-const updateBikeIntoDB = async (id: string, payload: Partial<Bike>) => {
-  const result = await prisma.bike.update({
-    where: { bikeId: id },
-    data: payload,
-  });
-  return result;
-};
-
-// delete customer from the db
-const deleteBikeFromDB = async (id: string) => {
-  const result = await prisma.bike.delete({
-    where: { bikeId: id },
-  });
-  return result;
-};
 
 export const BikeServices = {
   createBikeIntoDB,
   getAllBikesFromDB,
   getSpecificBikeFromDB,
-  updateBikeIntoDB,
-  deleteBikeFromDB,
 };
