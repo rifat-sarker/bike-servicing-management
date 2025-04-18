@@ -32,9 +32,18 @@ const updateCustomerIntoDB = async (id: string, payload: Partial<Customer>) => {
   return result;
 };
 
+// delete customer from the db
+const deleteCustomerFromDB = async (id: string) => {
+  const result = await prisma.customer.delete({
+    where: { customerId: id },
+  });
+  return result;
+};
+
 export const CustomerServices = {
   createCustomerIntoDB,
   getAllCustomersFromDB,
   getSpecificCustomerFromDB,
   updateCustomerIntoDB,
+  deleteCustomerFromDB,
 };

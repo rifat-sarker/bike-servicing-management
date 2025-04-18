@@ -74,12 +74,38 @@ const updateCustomer = async (req: Request, res: Response) => {
       message: "Customer updated successfully",
       data: result,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error updating customer:", error);
+    res.status(500).json({ message: "Fail to update customer" });
+  }
 };
+
+const deleteCustomer = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await CustomerServices.deleteCustomerFromDB(id);
+    if (!result) {
+      res.status(404).json({
+        success: false,
+        message: "Customer not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Customer deleted successfully",
+      data: null,
+    });
+  } catch (error) {
+    console.error("Error deleting customer:", error);
+    res.status(500).json({ message: "Fail to delete customer" });
+  }
+};
+
 
 export const customerController = {
   createCustomer,
   getAllCustomers,
   getSpecificCustomer,
   updateCustomer,
+  deleteCustomer,
 };
