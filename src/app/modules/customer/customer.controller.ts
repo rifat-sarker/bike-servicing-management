@@ -27,7 +27,7 @@ const getAllCustomers = async (req: Request, res: Response) => {
     const result = await CustomerServices.getAllCustomersFromDB();
     res.status(200).json({
       success: true,
-      message: "Customers retrieved successfully",
+      message: "Customers fetched successfully",
       data: result,
     });
   } catch (error) {
@@ -42,14 +42,14 @@ const getSpecificCustomer = async (req: Request, res: Response) => {
     const { id } = req.params;
     const result = await CustomerServices.getSpecificCustomerFromDB(id);
     if (!result) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: "Customer not found",
       });
     }
     res.status(200).json({
       success: true,
-      message: "Customer retrieved successfully",
+      message: "Customer fetched successfully",
       data: result,
     });
   } catch (error) {
@@ -58,8 +58,28 @@ const getSpecificCustomer = async (req: Request, res: Response) => {
   }
 };
 
+// update customer
+const updateCustomer = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await CustomerServices.updateCustomerIntoDB(id, req.body);
+    if (!result) {
+      res.status(404).json({
+        success: false,
+        message: "Customer not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Customer updated successfully",
+      data: result,
+    });
+  } catch (error) {}
+};
+
 export const customerController = {
   createCustomer,
   getAllCustomers,
   getSpecificCustomer,
+  updateCustomer,
 };
