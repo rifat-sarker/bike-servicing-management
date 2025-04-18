@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  // output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -45,6 +45,8 @@ model ServiceRecord {
   completionDate DateTime?
   description    String
   status         String
+
+  @@map("serviceRecords")
 }
 
 // enum Status {
