@@ -43,7 +43,7 @@ const getSpecificService = async (req: Request, res: Response) => {
     const { id } = req.params;
     const result = await RecordServices.getSpecificeServiceFromDB(id);
     if (!result) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "Service not found",
       });
@@ -65,7 +65,7 @@ const updateService = async (req: Request, res: Response) => {
     const { id } = req.params;
     const result = await RecordServices.updateServiceIntoDB(id, req.body);
     if (!result) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "Service not found",
       });
@@ -81,9 +81,25 @@ const updateService = async (req: Request, res: Response) => {
   }
 };
 
+const getServiceStatus = async (req: Request, res: Response) => {
+  try {
+    const result = await RecordServices.getServiceStatusFromDB();
+    console.log(result);
+    res.status(200).json({
+      success: true,
+      message: "Service status fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error getting service status:", error);
+    res.status(500).json({ message: "Fail to fetch service status" });
+  }
+};
+
 export const ServiceController = {
   createService,
   getAllServices,
   getSpecificService,
   updateService,
+  getServiceStatus,
 };

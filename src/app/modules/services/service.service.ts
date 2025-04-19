@@ -35,9 +35,22 @@ const updateServiceIntoDB = async (
   return result;
 };
 
+const getServiceStatusFromDB = async () => {
+  const result = await prisma.serviceRecord.findMany({
+    where: {
+      status: { in: ["pending", "in-progress"] },
+      serviceDate: {
+        lt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      },
+    },
+  });
+  return result;
+};
+
 export const RecordServices = {
   createServiceIntoDB,
   getAllServicesFromDB,
   getSpecificeServiceFromDB,
   updateServiceIntoDB,
+  getServiceStatusFromDB,
 };
