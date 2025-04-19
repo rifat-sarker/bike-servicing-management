@@ -1,10 +1,8 @@
-import { Request, Response } from "express";
-import prisma from "../../utils/prisma";
 import { CustomerServices } from "./customer.service";
-import { Customer } from "@prisma/client";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 
 // Create customer
 const createCustomer = catchAsync(async (req, res) => {
@@ -36,6 +34,9 @@ const getSpecificCustomer = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await CustomerServices.getSpecificCustomerFromDB(id);
 
+   if (!result) {
+     throw new AppError(404, "Customer not found");
+   }
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

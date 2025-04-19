@@ -35,17 +35,21 @@ const updateServiceIntoDB = async (
   return result;
 };
 
+// get service status from the db
 const getServiceStatusFromDB = async () => {
   const result = await prisma.serviceRecord.findMany({
     where: {
       status: { in: ["pending", "in-progress"] },
       serviceDate: {
-        lt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        lte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
       },
     },
   });
+  console.log("Threshold:", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+
   return result;
 };
+
 
 export const RecordServices = {
   createServiceIntoDB,

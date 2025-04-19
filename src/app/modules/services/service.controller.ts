@@ -1,11 +1,8 @@
-import { Request, Response } from "express";
-import prisma from "../../utils/prisma";
-
-import { Customer } from "@prisma/client";
 import { RecordServices } from "./service.service";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 
 // Create service
 const createService = catchAsync(async (req, res) => {
@@ -36,6 +33,10 @@ const getAllServices = catchAsync(async (req, res) => {
 const getSpecificService = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await RecordServices.getSpecificeServiceFromDB(id);
+
+   if (!result) {
+     throw new AppError(404, "Service not found");
+   }
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

@@ -4,6 +4,7 @@ import { BikeServices } from "./bike.service";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 
 // Create bike
 const createBike = catchAsync(async (req, res) => {
@@ -34,6 +35,10 @@ const getAllBikes = catchAsync(async (req, res) => {
 const getSpecificBike = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await BikeServices.getSpecificBikeFromDB(id);
+
+  if (!result) {
+    throw new AppError(404, "Bike not found");
+  }
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
