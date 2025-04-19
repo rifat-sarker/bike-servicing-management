@@ -3,98 +3,72 @@ import prisma from "../../utils/prisma";
 
 import { Customer } from "@prisma/client";
 import { RecordServices } from "./service.service";
+import catchAsync from "../../utils/catchAsync";
+import sendResponse from "../../utils/sendResponse";
+import httpStatus from "http-status";
 
 // Create service
-const createService = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const serviceData = req.body;
+const createService = catchAsync(async (req, res) => {
+  const serviceData = req.body;
+  const result = await RecordServices.createServiceIntoDB(serviceData);
 
-    const result = await RecordServices.createServiceIntoDB(serviceData);
-
-    res.status(201).json({
-      success: true,
-      message: "Service record created successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error creating service:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Service record created successfully",
+    data: result,
+  });
+});
 
 // get all services
-const getAllServices = async (req: Request, res: Response) => {
-  try {
-    const result = await RecordServices.getAllServicesFromDB();
-    res.status(200).json({
-      success: true,
-      message: "Service record fetched successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error getting services:", error);
-    res.status(500).json({ message: "Fail to fetch services" });
-  }
-};
+const getAllServices = catchAsync(async (req, res) => {
+  const result = await RecordServices.getAllServicesFromDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Service record fetched successfully",
+    data: result,
+  });
+});
 
 // get specific service by id
-const getSpecificService = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const result = await RecordServices.getSpecificeServiceFromDB(id);
-    if (!result) {
-      return res.status(404).json({
-        success: false,
-        message: "Service not found",
-      });
-    }
-    res.status(200).json({
-      success: true,
-      message: "Service record fetched successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error getting service:", error);
-    res.status(500).json({ message: "Fail to fetch service" });
-  }
-};
+const getSpecificService = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await RecordServices.getSpecificeServiceFromDB(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Service record fetched successfully",
+    data: result,
+  });
+});
 
 // update service
-const updateService = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const result = await RecordServices.updateServiceIntoDB(id, req.body);
-    if (!result) {
-      return res.status(404).json({
-        success: false,
-        message: "Service not found",
-      });
-    }
-    res.status(200).json({
-      success: true,
-      message: "Service marked as completed",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error updating service:", error);
-    res.status(500).json({ message: "Fail to update service" });
-  }
-};
+const updateService = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await RecordServices.updateServiceIntoDB(id, req.body);
 
-const getServiceStatus = async (req: Request, res: Response) => {
-  try {
-    const result = await RecordServices.getServiceStatusFromDB();
-    console.log(result);
-    res.status(200).json({
-      success: true,
-      message: "Service status fetched successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error getting service status:", error);
-    res.status(500).json({ message: "Fail to fetch service status" });
-  }
-};
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Service marked as completed",
+    data: result,
+  });
+});
+
+// get service status
+const getServiceStatus = catchAsync(async (req, res) => {
+  const result = await RecordServices.getServiceStatusFromDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Overdue or pending services fetched successfully",
+    data: result,
+  });
+});
 
 export const ServiceController = {
   createService,

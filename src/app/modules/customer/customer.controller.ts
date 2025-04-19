@@ -2,105 +2,73 @@ import { Request, Response } from "express";
 import prisma from "../../utils/prisma";
 import { CustomerServices } from "./customer.service";
 import { Customer } from "@prisma/client";
+import catchAsync from "../../utils/catchAsync";
+import sendResponse from "../../utils/sendResponse";
+import httpStatus from "http-status";
 
 // Create customer
-const createCustomer = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const customerData = req.body;
+const createCustomer = catchAsync(async (req, res) => {
+  const customerData = req.body;
+  const result = await CustomerServices.createCustomerIntoDB(customerData);
 
-    const result = await CustomerServices.createCustomerIntoDB(customerData);
-
-    res.status(201).json({
-      success: true,
-      message: "Customer created successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error creating customer:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Customer created successfully",
+    data: result,
+  });
+});
 
 // get all customers
-const getAllCustomers = async (req: Request, res: Response) => {
-  try {
-    const result = await CustomerServices.getAllCustomersFromDB();
-    res.status(200).json({
-      success: true,
-      message: "Customers fetched successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error getting customers:", error);
-    res.status(500).json({ message: "Fail to fetch customers" });
-  }
-};
+const getAllCustomers = catchAsync(async (req, res) => {
+  const result = await CustomerServices.getAllCustomersFromDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Customers fetched successfully",
+    data: result,
+  });
+});
 
 // get specific customer by id
-const getSpecificCustomer = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const result = await CustomerServices.getSpecificCustomerFromDB(id);
-    if (!result) {
-      res.status(404).json({
-        success: false,
-        message: "Customer not found",
-      });
-    }
-    res.status(200).json({
-      success: true,
-      message: "Customer fetched successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error getting customer:", error);
-    res.status(500).json({ message: "Fail to fetch customer" });
-  }
-};
+const getSpecificCustomer = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await CustomerServices.getSpecificCustomerFromDB(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Customers fetched successfully",
+    data: result,
+  });
+});
 
 // update customer
-const updateCustomer = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const result = await CustomerServices.updateCustomerIntoDB(id, req.body);
-    if (!result) {
-      res.status(404).json({
-        success: false,
-        message: "Customer not found",
-      });
-    }
-    res.status(200).json({
-      success: true,
-      message: "Customer updated successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error updating customer:", error);
-    res.status(500).json({ message: "Fail to update customer" });
-  }
-};
+const updateCustomer = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await CustomerServices.updateCustomerIntoDB(id, req.body);
 
-const deleteCustomer = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const result = await CustomerServices.deleteCustomerFromDB(id);
-    if (!result) {
-      res.status(404).json({
-        success: false,
-        message: "Customer not found",
-      });
-    }
-    res.status(200).json({
-      success: true,
-      message: "Customer deleted successfully",
-      data: null,
-    });
-  } catch (error) {
-    console.error("Error deleting customer:", error);
-    res.status(500).json({ message: "Fail to delete customer" });
-  }
-};
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Customer updated successfully",
+    data: result,
+  });
+});
 
+// delete customer
+const deleteCustomer = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await CustomerServices.deleteCustomerFromDB(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Customer deleted successfully",
+    data: null,
+  });
+});
 
 export const customerController = {
   createCustomer,
