@@ -7,6 +7,8 @@
 generator client {
   provider = "prisma-client-js"
   // output   = "../src/generated/prisma"
+  // output   = "./node_modules/@prisma/client"
+  pool     = true // Add connection pooling for serverless
 }
 
 datasource db {
