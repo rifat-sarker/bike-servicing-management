@@ -30,7 +30,7 @@ const updateServiceIntoDB = async (
 ) => {
   const result = await prisma.serviceRecord.update({
     where: { serviceId: id },
-    data: payload,
+    data: {...payload, status: "done"},
   });
   return result;
 };

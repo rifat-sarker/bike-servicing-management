@@ -6,7 +6,7 @@ router.get("/status", ServiceController.getServiceStatus);
 router.post("/", ServiceController.createService);
 router.get("/", ServiceController.getAllServices);
 router.get("/:id", ServiceController.getSpecificService);
-router.put("/:id", ServiceController.updateService);
+router.put("/:id/complete", ServiceController.updateService);
 
 
 export const ServiceRoutes = router;
